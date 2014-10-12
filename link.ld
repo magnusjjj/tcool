@@ -1,40 +1,30 @@
-/* Link.ld -- Linker script for the kernel - ensure everything goes in the */
-/*            Correct place.  */
-/*            Original file taken from Bran's Kernel Development */
-/*            tutorials: http://www.osdever.net/bkerndev/index.php. */
-
+OUTPUT_FORMAT("binary")
 ENTRY(start)
-OUTPUT_FORMAT(binary)
+
+phys = 0x00100000;
 SECTIONS
 {
-    .text : AT(0x100000)
-    {
-	mboot_pointer = .;
-	*(.mboot);
-        code = .;
-        *(.text);
-        *(.rodata);
-	code_end = .;
-	. = ALIGN(4096);
-    }
-
-    .data :
-    {
-        data = .;
-        *(.data);
+  .text phys : AT(phys) {
+    kernel_addr_start = .;
+    code = .;
+    *(.text)
+    *(.rodata)
+    . = ALIGN(4096);
+  }
+  .data : AT(phys + (data - code))
+  {
+    data = .;
+    *(.data);
 	kludge_start = .;
 	*(.kludge);
 	kludge_end = .;
-	data_end = .;
-	. = ALIGN(4096);
-    }
-
-    .bss :
-    {
-        bss = .;
-        *(.bss);
-	*(.bootstrap_stack);
-    }
-    end = .;
-
+    . = ALIGN(4096);
+  }
+  .bss : AT(phys + (bss - code))
+  {
+    bss = .;
+    *(.bss)
+    . = ALIGN(4096);
+  }
+  kernel_addr_end = .;
 }

@@ -7,7 +7,7 @@
 int AcpiParseSDT(struct ACPISDTHeader *p)
 {
 	unsigned char sum = 0;
-	for(int i = 0; i < p->Length; i++)
+	for(uint32_t i = 0; i < p->Length; i++)
 	{
 		sum += ((char *) p)[i];
 	}
@@ -21,26 +21,15 @@ int AcpiParseSDT(struct ACPISDTHeader *p)
 		if(cmp(p->Signature, "APIC", 4))
 		{
 
-			void* temp_pointer = (void*)p;
-
-//			uint32_t g_localApicAddr = temp_pointer + sizeof(struct ACPISDTHeader);
-
-//			uint32_t compare = cpuGetAPICBase();
-//			printf("Local apic: %x\n", (uint32_t)g_localApicAddr);
-//			printf("Local apic compare: %x\n", (uint32_t)compare);
-//			g_localApicAddr = (void *)compare;
-//			cpuSetAPICBase((uint32_t)g_localApicAddr);
+			char* temp_pointer = (void*)p;
 			uint8_t lapic_id = getApicId();
-			//uint32_t flags = (uint32_t)*(p + sizeof(struct ACPISDTHeader) + 4);
 			int offset = sizeof(struct ACPISDTHeader) + 8;
-		//	print("\n");
+
 			while((temp_pointer + offset) < (temp_pointer + p->Length))
 			{
-				//print("Type: ");
 				uint8_t type = *((uint8_t *)(temp_pointer + offset));
-				//print_dec(type);
-				//print("\n");
 				uint8_t length = *((uint8_t *)(temp_pointer+offset+1));
+
 				if(type == 0)
 				{
 					uint8_t processor_id = *((uint8_t *)(temp_pointer+offset+2));
@@ -52,9 +41,6 @@ int AcpiParseSDT(struct ACPISDTHeader *p)
 					} else {
 					}
 
-					// Send startup
-
-//					uint32_t flags = *((uint32_t *)(temp_pointer+offset+4));
 				} else if(type == 1)
 				{
 					printf("IO APIC\n");

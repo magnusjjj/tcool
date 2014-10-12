@@ -1,6 +1,9 @@
 #include "inc/common.h"
 #include "inc/ioapic.h"
 
+// Uncermoniously STOLEN from https://github.com/pdoane/osdev/blob/master/intr/ioapic.c
+// Then adapted a bit
+
 // ------------------------------------------------------------------------------------------------
 static void IoApicOut(uint8_t *base, uint8_t reg, uint32_t val)
 {

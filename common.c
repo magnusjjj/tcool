@@ -17,16 +17,19 @@ static void cursor_set(uint8_t int_x, uint8_t int_y)
 
 void clear_screen()
 {
-	for(uint32_t point = 0xB8000; point < 0xB80FA0; point = point + 2)
+
+	for(uint32_t point = 0xB8000; point < 0xB8FA0; point = point + 2)
 	{
 		*((uint8_t volatile *) (point)) = ' ';
 		*((uint8_t volatile *) (point + 1)) = SCREEN_ATTR;
 	}
+
 	cursor_set(0, 0);
 }
 
-void putc ( void* p, char c)
+void putc ( void* p __attribute__ ((__unused__)), char c)
 {
+
 	if(x == 80 || c == '\n')
 	{
 		y++;
@@ -82,12 +85,13 @@ void memset(void *p, uint8_t val, uint32_t len)
 	}
 }
 
-void memcpy(void *p1, void *p2, uint32_t len)
+void memcpy(void *p1_tmp, void *p2_tmp, uint32_t len)
 {
+	uint8_t volatile *p1 = p1_tmp;
+	uint8_t volatile *p2 = p2_tmp;
 	while(len != 0) {
 		len--;
-		*((volatile uint8_t volatile*)p1) = *((volatile uint8_t volatile*)p2);
-		++p1;
-		++p2;
+		*p1 = *p2;
+		++p1; ++p2;
 	}
 }
