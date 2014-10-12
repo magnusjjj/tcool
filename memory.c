@@ -10,7 +10,7 @@
 	- That its always possible to page align addresses
 	- That no calculations overflow
 	- It only moves the start of a memory area, and cannot 'split' a memory area into pieces.
-
+	- That the memory map pointers when they are in fact 64-bit
 	It also makes *no* checks on whether it overlaps acpi, apic, the multiboot info
 */
 
